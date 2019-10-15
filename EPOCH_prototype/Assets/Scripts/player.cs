@@ -10,7 +10,7 @@ public class player : MonoBehaviour {
     //Config
     [SerializeField] float runSpeed = 5;
     [SerializeField] float jumpSpeed = 5;
-    [SerializeField] float climbSpeed = 5;
+    //[SerializeField] float climbSpeed = 5;
     float scaleSize = 1;
     float StartingGravitySacle;
 
@@ -33,11 +33,12 @@ public class player : MonoBehaviour {
         Run();
         flipSprite();
         //Punch();
+        fall();
         jump();
-        /*fall();*/
-        climb();
-        // Debug.Log(myRidgidBody.velocity.x + "," + myRidgidBody.velocity.y);
-        Debug.Log(myCollider2D.IsTouchingLayers(LayerMask.GetMask("Ladder")));
+
+        //climb();
+        //Debug.Log(myRidgidBody.velocity.x + "," + myRidgidBody.velocity.y);
+        //Debug.Log(myCollider2D.IsTouchingLayers(LayerMask.GetMask("Ladder")));
 
     }
 
@@ -62,34 +63,44 @@ public class player : MonoBehaviour {
         }*/
 
     private void jump() {
-        bool hasJumpSpeed = false;
+       // bool hasPosVelY = false;
         if (myCollider2D.IsTouchingLayers(LayerMask.GetMask("Ground"))) {
             if (CrossPlatformInputManager.GetButtonDown("Jump")) {
                 Vector2 jumpVelToAdd = new Vector2(0f, jumpSpeed);
                 myRidgidBody.velocity += jumpVelToAdd;
-                //hasJumpSpeed = Mathf.Abs(myRidgidBody.velocity.y) > Mathf.Epsilon;
                 myAnimator.SetBool("Jumping", true);
             }
         }
-        myAnimator.SetBool("Jumping", myRidgidBody.velocity.y != 0);
-
-    }
-
-    private void climb() {
-        if (!myCollider2D.IsTouchingLayers(LayerMask.GetMask("Ladder"))) {
-            myAnimator.SetBool("Climb", false);
-            myRidgidBody.gravityScale = StartingGravitySacle;
-            return;
+        if (myRidgidBody.velocity.y <= 0) {
+            myAnimator.SetBool("Jumping", false);
         }
-
-        float controlThrow = CrossPlatformInputManager.GetAxis("Vertical");
-        Vector2 climbVelocity = new Vector2(myRidgidBody.velocity.x, controlThrow * climbSpeed);
-        myRidgidBody.velocity = climbVelocity;
-        myRidgidBody.gravityScale = 0f;
-
-        myAnimator.SetBool("Climb", true);
-
+        return;
     }
+
+    private void fall() {
+        if (myRidgidBody.velocity.y < 0f) {
+            myAnimator.SetBool("Falling", true);
+        } else if (myRidgidBody.velocity.y >= 0f) {
+            myAnimator.SetBool("Falling", false);
+        }
+        return;
+    }
+
+    /*    private void climb() {
+            if (!myCollider2D.IsTouchingLayers(LayerMask.GetMask("Ladder"))) {
+                myAnimator.SetBool("Climb", false);
+                myRidgidBody.gravityScale = StartingGravitySacle;
+                return;
+            }
+
+            float controlThrow = CrossPlatformInputManager.GetAxis("Vertical");
+            Vector2 climbVelocity = new Vector2(myRidgidBody.velocity.x, controlThrow * climbSpeed);
+            myRidgidBody.velocity = climbVelocity;
+            myRidgidBody.gravityScale = 0f;
+
+            myAnimator.SetBool("Climb", true);
+
+        }*/
 
     /*    private void animatorControl() {
 
