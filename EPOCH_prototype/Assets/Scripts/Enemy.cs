@@ -5,8 +5,11 @@ using UnityEngine;
 public class Enemy : MonoBehaviour {
 
     public int health;
+    public int armor;
+
 
     private Animator anim;
+    public GameObject bloodSplash;
 
     // Start is called before the first frame update
     void Start() {
@@ -19,6 +22,7 @@ public class Enemy : MonoBehaviour {
     }
 
     public void TakeDamage(int damage) {
+        Instantiate(bloodSplash, transform.position, Quaternion.identity);
         health -= damage;
         Debug.Log("Dummy hit!");
     }

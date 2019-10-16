@@ -32,14 +32,8 @@ public class player : MonoBehaviour {
     void Update() {
         Run();
         flipSprite();
-        //Punch();
-        fall();
         jump();
-
-        //climb();
-        //Debug.Log(myRidgidBody.velocity.x + "," + myRidgidBody.velocity.y);
-        //Debug.Log(myCollider2D.IsTouchingLayers(LayerMask.GetMask("Ladder")));
-
+        sit();
     }
 
     private void Run() {
@@ -58,12 +52,7 @@ public class player : MonoBehaviour {
         }
     }
 
-    /*    private void Punch() {
-            myAnimator.SetBool("Punch", Input.GetKeyDown(KeyCode.J));
-        }*/
-
     private void jump() {
-       // bool hasPosVelY = false;
         if (myCollider2D.IsTouchingLayers(LayerMask.GetMask("Ground"))) {
             if (CrossPlatformInputManager.GetButtonDown("Jump")) {
                 Vector2 jumpVelToAdd = new Vector2(0f, jumpSpeed);
@@ -77,16 +66,17 @@ public class player : MonoBehaviour {
         return;
     }
 
-    private void fall() {
-        if (myRidgidBody.velocity.y < 0f) {
-            myAnimator.SetBool("Falling", true);
-        } else if (myRidgidBody.velocity.y >= 0f) {
-            myAnimator.SetBool("Falling", false);
+    private void sit() {
+        if (myCollider2D.IsTouchingLayers(LayerMask.GetMask("Ground"))) {
+            if (Input.GetKeyDown("c")) {
+                myAnimator.SetBool("Sit", true);
+            }
+            if (Input.GetKeyUp("c")) {
+                myAnimator.SetBool("Sit", false);
+            }
         }
-        return;
     }
-
-    /*    private void climb() {
+    /*private void climb() {
             if (!myCollider2D.IsTouchingLayers(LayerMask.GetMask("Ladder"))) {
                 myAnimator.SetBool("Climb", false);
                 myRidgidBody.gravityScale = StartingGravitySacle;
@@ -101,16 +91,4 @@ public class player : MonoBehaviour {
             myAnimator.SetBool("Climb", true);
 
         }*/
-
-    /*    private void animatorControl() {
-
-
-        }*/
-
-    /*private void fall() {
-        myAnimator.SetBool("Falling", myRidgidBody.velocity.y < Mathf.Epsilon);
-        if (myRidgidBody.velocity.y == Mathf.Epsilon) {
-            myAnimator.SetBool("Falling", false);
-        }
-    }*/
 }
