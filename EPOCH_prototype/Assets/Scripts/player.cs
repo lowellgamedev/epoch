@@ -13,6 +13,11 @@ public class player : MonoBehaviour {
     //[SerializeField] float climbSpeed = 5;
     float scaleSize = 1;
     float StartingGravitySacle;
+    public float dashSpeed;
+    private float dashTime;
+    public float startDashTime;
+    private int direction;
+
 
     //Components
     Rigidbody2D myRidgidBody;
@@ -26,6 +31,7 @@ public class player : MonoBehaviour {
         myAnimator = GetComponent<Animator>();
         myCollider2D = GetComponent<Collider2D>();
         StartingGravitySacle = myRidgidBody.gravityScale;
+        dashTime = startDashTime;
     }
 
     // Update is called once per frame
@@ -34,8 +40,13 @@ public class player : MonoBehaviour {
         flipSprite();
         jump();
         sit();
+        dash();
     }
 
+
+    //Set controlThrow to -1 or 1 depending on the horizontal input key (A and D), 
+    //then set the player's velocity to a new Vector2D with the adjusted key input
+    //If there's a horizontal key input, then set the "Running" animation to true.
     private void Run() {
         float controlThrow = CrossPlatformInputManager.GetAxis("Horizontal");
         Vector2 playerVelocity = new Vector2(controlThrow * runSpeed, myRidgidBody.velocity.y);
@@ -44,6 +55,7 @@ public class player : MonoBehaviour {
         myAnimator.SetBool("Running", hasHorizontalSpeed);
     }
 
+    //Flips the sprite if depending on which way it's facing
     private void flipSprite() {
         bool hasHorizontalSpeed = Mathf.Abs(myRidgidBody.velocity.x) > Mathf.Epsilon;
 
@@ -91,4 +103,19 @@ public class player : MonoBehaviour {
             myAnimator.SetBool("Climb", true);
 
         }*/
+
+    private void dash() {
+        if (Input.GetKeyDown(KeyCode.LeftShift)) {
+            myRidgidBody.velocity = Vector2.zero;
+            if (dashTime <= 0) {
+                myRidgidBody.velocity = Vector2.zero;
+            } else {
+                if (transform.localScale.x > 0) {
+                    myRidgidBody.velocity = Vector2.right * dashSpeed;
+                } else if (transform.localScale.x < 0){
+                    myRidgidBody.velocity = Vector2.left * dashSpeed;
+                }
+            }
+        }
+    }
 }
