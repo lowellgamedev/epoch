@@ -2,12 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 
 
 public class player : MonoBehaviour {
 
 
     //Config
+    public float CurrentHealth;
+    public float MaxHealth;
+    public float CurrentMana;
+    public float MaxMana;
     [SerializeField] float runSpeed = 5;
     [SerializeField] float jumpSpeed = 5;
     //[SerializeField] float climbSpeed = 5;
@@ -23,6 +30,9 @@ public class player : MonoBehaviour {
     Rigidbody2D myRidgidBody;
     Animator myAnimator;
     Collider2D myCollider2D;
+    public Slider HealthBar;
+    public Slider ManaBar;
+
 
 
     // Start is called before the first frame update
@@ -32,6 +42,8 @@ public class player : MonoBehaviour {
         myCollider2D = GetComponent<Collider2D>();
         StartingGravitySacle = myRidgidBody.gravityScale;
         dashTime = startDashTime;
+        MaxHealth = 100;
+        CurrentHealth = MaxHealth;
     }
 
     // Update is called once per frame
@@ -41,6 +53,8 @@ public class player : MonoBehaviour {
         jump();
         sit();
         dash();
+        takeDamage((float)0.5);
+        UpdateUI();
     }
 
 
@@ -118,4 +132,27 @@ public class player : MonoBehaviour {
             }
         }
     }
+
+    public void takeDamage(float damage) {
+        CurrentHealth -= damage;
+        if (CurrentHealth <= 0) {
+            //Die();
+            SceneManager.LoadScene("Death");
+        }
+    }
+
+    public void drainMana(float manaDrain) {
+        CurrentMana -= manaDrain;
+    }
+
+    public void UpdateUI() {
+        float Health = CurrentHealth / MaxHealth;
+        float Mana = CurrentMana / MaxMana;
+        HealthBar.value = Health;
+        ManaBar.value = Mana;
+    }
+
+/*    public void Die() {
+        myAnimator.SetBool("Dead", true);
+    }*/
 }
